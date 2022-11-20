@@ -1,17 +1,8 @@
-// ---------------------------------------------------------------
-//
-//  Beispiel in der Vorlesung "Algorithmen und Datenstrukturen (WIN+BIT)"
-//  WS 2022/23
-//
-// (c) 2022, Georg Umlauf
-//
-// ---------------------------------------------------------------
-
 public class DynamicArray {
     // Data-Members
     private static final int binBlockSize = 1;
     private int binLevel;
-    private int binCapacity;        // could be replaced by dataBin.length, but it is clearer to have it explicit
+    private int binCapacity;
     private DummyData[] dataBin;
 
     // Methods
@@ -21,25 +12,41 @@ public class DynamicArray {
         dataBin     = new DummyData[binCapacity];
     }
 
-
-    public int search(DummyData x)          // search for data x in the array
+    public int search(DummyData key)          // search for data key in the array
     {
-        for (int i = 0; i< binLevel; i++)
-            if (dataBin[i].equals(x)) return i;
-        return -1;                          // return-value -1 signals, that the sought data is NOT in the array
+        // Aus Vorlesung
+        int li = 0;
+        int re = binLevel-1;
+
+        while (re >= li) {
+            int mid = (li+re) / 2;
+            if (key == a[mid]) {
+                return mid;
+            } else if (key < a[mid]) {
+                re = mid - 1;
+            } else {
+                li = mid+1;
+            }
+            return  -1;
+        }
+
     }
 
     public boolean insert(DummyData x, int i)   // insert data x at position i to array; yields true, if successful
     {
-        // check position --------------------------------------------------------------------------
-        if (i<0||i> binLevel) return false;     // invalid position yields return-value false
-        // check capacity --------------------------------------------------------------------------
-        if (binLevel >= binCapacity) grow();    // no free space left in the array
-        // insert new data --------------------------------------------------------------------------
-        for (int j = binLevel; j > i; j--) dataBin[j] = dataBin[j-1];   // move data in array one position up
-        dataBin[i] = x;                                                 // write data x to array at position i
-        binLevel++;                                                     // increase level
-        return true;
+        //Aus Vorlesung
+
+
+
+//        // check position --------------------------------------------------------------------------
+//        if (i<0||i> binLevel) return false;     // invalid position yields return-value false
+//        // check capacity --------------------------------------------------------------------------
+//        if (binLevel >= binCapacity) enlarge();    // no free space left in the array
+//        // insert new data --------------------------------------------------------------------------
+//        for (int j = binLevel; j > i; j--) dataBin[j] = dataBin[j-1];   // move data in array one position up
+//        dataBin[i] = x;                                                 // write data x to array at position i
+//        binLevel++;                                                     // increase level
+//        return true;
     }
 
     public boolean remove(DummyData d)  // remove data d from array; yields true, if successful
@@ -55,24 +62,7 @@ public class DynamicArray {
         return true;
     }
 
-//    public DummyData get(int i)                 // yields data at position i and null if position is invalid
-//    {
-//        // check position -----------------------------------------------------------------
-//        if (i<0||i> binLevel) return null;      // invalid position
-//        // get data -----------------------------------------------------------------------
-//        return dataBin[i];
-//    }
-//
-//    public boolean set(DummyData x, int i)      // change data x at position i to array; yields true, if successful
-//    {
-//        // check position -----------------------------------------------------------------
-//        if (i<0||i> binLevel) return false;      // invalid position
-//        // change data --------------------------------------------------------------------
-//        dataBin[i] = x;
-//        return true;
-//    }
-
-    private void grow()
+    private void enlarge()
     {
         DummyData[] newBin = new DummyData[binCapacity+ binBlockSize];  // allocate larger array
         for (int j = 0; j < binCapacity; j++) newBin[j] = dataBin[j];   // copy old data to new array
@@ -89,9 +79,5 @@ public class DynamicArray {
         binCapacity -= binBlockSize;                                    // decrease capacity
     }
 
-//    public void print(){
-//        System.out.println("Array ( "+binLevel+", "+binCapacity+"):");
-//        for (int i=0; i<binLevel; i++) System.out.println(dataBin[i].getContent());
-//    }
 
 }

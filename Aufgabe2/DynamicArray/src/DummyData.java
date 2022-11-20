@@ -1,12 +1,3 @@
-// ---------------------------------------------------------------
-//
-//  Beispiel in der Vorlesung "Algorithmen und Datenstrukturen (WIN+BIT)"
-//  WS 2022/23
-//
-// (c) 2022, Georg Umlauf
-//
-// ---------------------------------------------------------------
-
 public class DummyData {
     String content;
     public DummyData(        ) { content = "leer"; }
