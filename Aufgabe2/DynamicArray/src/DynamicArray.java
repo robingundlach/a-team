@@ -50,6 +50,26 @@ public class DynamicArray {
         int lt = 0;
         int rt = binLevel - 1;
 
+        while (rt >= lt) {
+            int md = (lt + rt) / 2;
+            if (key < dataBin[md] && key < dataBin[md + 1]) {
+                for (int i = binLevel; i > md; i--) {
+                    dataBin[i] = dataBin[i - 1];
+                }
+                dataBin[md + 1] = key;
+                binLevel++;
+                return true;
+            }
+            if (key < dataBin[md]) {
+                rt = md - 1;
+            }
+            else {
+                lt = md + 1;
+            }
+
+        }
+        return true;
+
         //noch nicht vollständig felt search und anpassen
 
     }
