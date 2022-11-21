@@ -3,81 +3,95 @@ public class DynamicArray {
     private static final int binBlockSize = 1;
     private int binLevel;
     private int binCapacity;
-    private DummyData[] dataBin;
+    private int [] dataBin;
 
     // Methods
     public DynamicArray() {
-        binLevel    = 0;
+        this.binLevel    = 0;
         binCapacity = binBlockSize;
-        dataBin     = new DummyData[binCapacity];
+        dataBin     = new int[binCapacity];
     }
 
-    public int search(DummyData key)          // search for data key in the array
+    public int[] getDataBin() {
+        return dataBin;
+    }
+
+    public int search(int key)
     {
-        // Aus Vorlesung
+        //Voraussetzung: Array ist aufsteigend sortiert
         int li = 0;
         int re = binLevel-1;
-
         while (re >= li) {
             int mid = (li+re) / 2;
-            if (key == a[mid]) {
-                return mid;
-            } else if (key < a[mid]) {
-                re = mid - 1;
-            } else {
-                li = mid+1;
+            if (key == dataBin[mid]) return mid;
+            if (key < dataBin[mid]) re = mid - 1;
+            else li = mid+1;
             }
             return  -1;
         }
 
+    public boolean insert(int key)
+    {
+        if (binLevel == 0 || binLevel == 1) {   //ist array leer?
+            dataBin[binLevel] = key;
+            binLevel++;
+            return true;
+        }
+        if (binLevel >= binCapacity) {          //reich die Kapazität
+            enlarge();
+        }
+        if (search(key) >= 0 ) {                //Daten bereits vorhanden
+            return false;
+        }
+        if (key > dataBin[binLevel - 1]) {      //Level Anpassen
+            dataBin[binLevel++] = key;
+        }
+
+        int lt = 0;
+        int rt = binLevel - 1;
+
+        //noch nicht vollständig felt search und anpassen
+
     }
 
-    public boolean insert(DummyData x, int i)   // insert data x at position i to array; yields true, if successful
+    public boolean remove(int key)
     {
-        //Aus Vorlesung
+        if (search(key) <= 0) {             //ist Key vorhanden?
+            return false;
+        }
 
+        int numKey = search(key);           //Position Key
 
-
-//        // check position --------------------------------------------------------------------------
-//        if (i<0||i> binLevel) return false;     // invalid position yields return-value false
-//        // check capacity --------------------------------------------------------------------------
-//        if (binLevel >= binCapacity) enlarge();    // no free space left in the array
-//        // insert new data --------------------------------------------------------------------------
-//        for (int j = binLevel; j > i; j--) dataBin[j] = dataBin[j-1];   // move data in array one position up
-//        dataBin[i] = x;                                                 // write data x to array at position i
-//        binLevel++;                                                     // increase level
-//        return true;
-    }
-
-    public boolean remove(DummyData d)  // remove data d from array; yields true, if successful
-    {
-        // check data --------------------------------------------------------------------------
-        int i = search(d);
-        if (i<0) return false;          // data not contained in the array, yields return-value false
-        // check capacity ---------------------------------------------------------------------
-        if (binLevel < binCapacity- binBlockSize) shrink();             // waste in array too large
-        // remove data ------------------------------------------------------------------------
-        for (int j = i; j< binLevel-1; j++) dataBin[j] = dataBin[j+1];  // advance data one position
-        binLevel--;                                                     // decrease level
+        for (int i = numKey + 1; i < binLevel; i++) {       //key entfernen
+            dataBin[i - 1] = dataBin[i];
+        }
+        dataBin[binLevel - 1] = 0;
+        binLevel--;
+        if (binLevel < binCapacity - binBlockSize) {
+            shrink();
+        }
         return true;
     }
 
-    private void enlarge()
+    private void enlarge()                          // Array wird enlarged
     {
-        DummyData[] newBin = new DummyData[binCapacity+ binBlockSize];  // allocate larger array
-        for (int j = 0; j < binCapacity; j++) newBin[j] = dataBin[j];   // copy old data to new array
-        dataBin   = newBin;                                             // assign new array to data-member
-        binCapacity += binBlockSize;                                    // increase capacity
+        int[] newBin = new int[binCapacity + binBlockSize];
+        for (int i = 0; i < binLevel; i++) {
+            newBin[i] = dataBin[i];
+        }
+        dataBin = newBin;
+        binCapacity += binBlockSize;
     }
 
     private void shrink()
     {
-        if ( binCapacity<=binBlockSize ) return;                          // do nothing, if too small
-        DummyData[] newBin = new DummyData[binCapacity- binBlockSize];  // allocate smaller array
-        for (int j = 0; j < binLevel; j++) newBin[j] = dataBin[j];      // copy old data to new array
-        dataBin   = newBin;                                             // assign new array to data-member
-        binCapacity -= binBlockSize;                                    // decrease capacity
+        if (binCapacity <= binBlockSize) return;                //Überprüfung min size
+        int[] newBin = new int[binCapacity - binBlockSize];     //
+        for (int i = 0; i < binLevel; i++) {
+            newBin[i] = dataBin[i];
+        }
+        dataBin = newBin;
+        binCapacity -= binBlockSize;
     }
-
 
 }
