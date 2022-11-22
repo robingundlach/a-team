@@ -1,15 +1,15 @@
 public class DynamicArray {
     // Data-Members
     private static final int binBlockSize = 1;
-    private int binLevel;
-    private int binCapacity;
-    private int [] dataBin;
+    private int binLevel;       //Füllstand
+    private int binCapacity;    //maximale Füllung
+    private int [] dataBin;     //Datentyp des Bin ist int
 
     // Methods
     public DynamicArray() {
-        this.binLevel    = 0;
-        binCapacity = binBlockSize;
-        dataBin     = new int[binCapacity];
+        this.binLevel       = 0;
+        binCapacity         = binBlockSize;             //initiale größe
+        dataBin             = new int[binCapacity];
     }
 
     public int[] getDataBin() {
@@ -69,31 +69,29 @@ public class DynamicArray {
 
         }
         return true;
-
-        //noch nicht vollständig felt search und anpassen
-
     }
 
     public boolean remove(int key)
     {
-        if (search(key) <= 0) {             //ist Key vorhanden?
-            return false;
-        }
-
         int numKey = search(key);           //Position Key
+        if (search(key) <= 0) {             //ist Key vorhanden?
+            return false;                   //invalid position
+        }
 
-        for (int i = numKey + 1; i < binLevel; i++) {       //key entfernen
-            dataBin[i - 1] = dataBin[i];
-        }
-        dataBin[binLevel - 1] = 0;
-        binLevel--;
         if (binLevel < binCapacity - binBlockSize) {
-            shrink();
+            shrink();                       //array is under-full and shrink
         }
+
+        for (int i = numKey + 1; i < binLevel; i++) {   //move data in array down
+            dataBin[i] = dataBin[i + 1];
+        }
+        dataBin[binLevel - 1] = 0;                      // set last index to empty
+        binLevel--;                                     // decrease level
         return true;
+
     }
 
-    private void enlarge()                          // Array wird enlarged
+    private void enlarge()
     {
         int[] newBin = new int[binCapacity + binBlockSize];
         for (int i = 0; i < binLevel; i++) {
@@ -105,8 +103,8 @@ public class DynamicArray {
 
     private void shrink()
     {
-        if (binCapacity <= binBlockSize) return;                //Überprüfung min size
-        int[] newBin = new int[binCapacity - binBlockSize];     //
+        if (binCapacity <= binBlockSize) return;
+        int[] newBin = new int[binCapacity - binBlockSize];
         for (int i = 0; i < binLevel; i++) {
             newBin[i] = dataBin[i];
         }
