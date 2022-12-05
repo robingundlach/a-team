@@ -1,6 +1,6 @@
 public class DynamicArray {
     // Data-Members
-    private static final int binBlockSize = 1;
+    private static final int binBlockSize = 10;
     private int binLevel;       //Füllstand
     private int binCapacity;    //maximale Füllung
     private int [] dataBin;     //Datentyp des Bin ist int
@@ -32,7 +32,7 @@ public class DynamicArray {
 
     public boolean insert(int key)
     {
-        if (binLevel == 0 || binLevel == 1) {   //ist array leer?
+        if (binLevel == 0 || binLevel == 1) {
             dataBin[binLevel] = key;
             binLevel++;
             return true;
@@ -52,12 +52,12 @@ public class DynamicArray {
 
         while (rt >= lt) {
             int md = (lt + rt) / 2;
-            if (key < dataBin[md] && key < dataBin[md + 1]) {
+            if (key > dataBin[md] && key < dataBin[md + 1]) {
                 for (int i = binLevel; i > md; i--) {
                     dataBin[i] = dataBin[i - 1];
                 }
-                dataBin[md + 1] = key;
                 binLevel++;
+                dataBin[md + 1] = key;
                 return true;
             }
             if (key < dataBin[md]) {
@@ -71,9 +71,8 @@ public class DynamicArray {
         return true;
     }
 
-    public boolean remove(int key)
-    {
-        int numKey = search(key);           //Position Key
+    public boolean remove(int key) {
+        int numKey = search(key);
         if (search(key) <= 0) {             //ist Key vorhanden?
             return false;                   //invalid position
         }
@@ -91,8 +90,7 @@ public class DynamicArray {
 
     }
 
-    private void enlarge()
-    {
+    private void enlarge() {
         int[] newBin = new int[binCapacity + binBlockSize];
         for (int i = 0; i < binLevel; i++) {
             newBin[i] = dataBin[i];
@@ -101,8 +99,7 @@ public class DynamicArray {
         binCapacity += binBlockSize;
     }
 
-    private void shrink()
-    {
+    private void shrink() {
         if (binCapacity <= binBlockSize) return;
         int[] newBin = new int[binCapacity - binBlockSize];
         for (int i = 0; i < binLevel; i++) {
