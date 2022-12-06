@@ -1,23 +1,35 @@
 import java.util.Arrays;
 
+
 public class Main {
     public static void main(String[] args) {
-        int[] unsortedArray = {8, 7, 5, 3, 1, 9, 6, 4, 2};
-        System.out.printf("UnsortedArray: %s%n",Arrays.toString(unsortedArray));
-        System.out.printf("SortedArray:   %s%n",Arrays.toString(selectionSort(unsortedArray)));
+
+        int[] unsortiert = {14, 2, -133, 100, 1, 19};
+        System.out.printf("Unsortiertes Array: %s,%n", Arrays.toString(unsortiert));
+
+        int[] sortiert = selectionSort(unsortiert);
+        System.out.printf("Sortiertes Array:   %s,%n", Arrays.toString(sortiert));
+
     }
-    public static int[] selectionSort(int[] unsortedArray){
-        for (int i = 0; i< unsortedArray.length -1; i++){
 
-            for (int j = i+1; j < unsortedArray.length; j++) {
+    public static int[] selectionSort(int[] sortieren) {
+        for (int i = 0; i < sortieren.length - 1; i++) {
 
-                if (unsortedArray[j] < unsortedArray[i]) {  //Switch Elements of Array
-                    int key = unsortedArray[i];
-                    unsortedArray[i] = unsortedArray[j];
-                    unsortedArray[j] = key;
+            // kleinstes Element im Array suchen
+            int positionMin = i;
+            int min = sortieren[positionMin];
+            for (int j = i + 1; j < sortieren.length; j++) {
+                if (sortieren[j] < min) {
+                    positionMin = j;
+                    min = sortieren[positionMin];
                 }
             }
+
+            // Elemente tauschen
+            sortieren[positionMin] = sortieren[i];
+            sortieren[i] = min;
         }
-        return unsortedArray;
+
+        return sortieren;
     }
 }
