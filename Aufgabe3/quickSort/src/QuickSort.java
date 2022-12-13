@@ -2,21 +2,21 @@ import java.util.Arrays;
 
 public class QuickSort {
     public static void main(String[] args) {
-        int[] arr = {-5, 7, 1, 3, 9, 2};
+        int[] arr = {6, 7, 1, 3, 9, 2, -3};
         System.out.printf("Array before quickSort: %s%n", Arrays.toString(arr));
-        quicksort(arr, 0, arr.length - 1);
+        quickSort(arr, 0, arr.length - 1);
         System.out.printf("Array after quickSort:  %s%n", Arrays.toString(arr));
     }
 
-    public static void quicksort(int[] arr, int left, int right) {
+    public static void quickSort(int[] arr, int left, int right) {
         if (left >= right) {
             return;
         }
 
         int pivot = arr[(left + right) / 2];                //Choose middle Element as pivot
-        int index = partition(arr, left, right, pivot);
-        quicksort(arr, left, index - 1);
-        quicksort(arr, index, right);
+        int index = partition(arr, left, right, pivot);     //Assign index of left
+        quickSort(arr, left, index - 1);              //Recursive call going left
+        quickSort(arr, index, right);                      //Recursive call going right
     }
 
     public static int partition(int[] arr, int left, int right, int pivot) {
