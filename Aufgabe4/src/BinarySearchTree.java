@@ -1,4 +1,6 @@
 public class BinarySearchTree {
+    public Node root;
+
     private static class Node {
         int key;
         int value;
@@ -10,8 +12,6 @@ public class BinarySearchTree {
             this.value = value;
         }
     }
-
-    private Node root;
 
     // Inserts a new key-value pair into the tree rooted at the specified node
     public boolean insert(int key, int value, Node node) {
