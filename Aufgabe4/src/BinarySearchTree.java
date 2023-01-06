@@ -1,165 +1,134 @@
 public class BinarySearchTree {
-    public Node root;
 
-    private static class Node {
-        int key;
-        int value;
-        Node left;
-        Node right;
+        private Node root;
+        private boolean hilfsParameterInsert;
+        private boolean hilfsParameterRemove = true;
+        // private boolean returnSearch = true;
 
-        public Node(int key, int value) {
-            this.key = key;
-            this.value = value;
-        }
-    }
-
-    // Inserts a new key-value pair into the tree rooted at the specified node
-    public boolean insert(int key, int value, Node node) {
-        if (node == null) {
-            return false;
+        public BinarySearchTree() {
+            root = null;
         }
 
-        if (key < node.key) {
-            if (node.left == null) {
-                node.left = new Node(key, value);
-                return true;
+        // Teil 1
+// Insert-Method
+
+        Node insert(int key, int value, Node root) {
+            Node newNode = new Node(key, value);
+            if (root == null) {                 //Wenn Key nicht Verwenden
+                root = newNode;
+                this.hilfsParameterInsert = true;
+                if (this.root == null) {
+                    this.root = root;
+                }
             }
-            return insert(key, value, node.left);
-        } else if (key > node.key) {
-            if (node.right == null) {
-                node.right = new Node(key, value);
-                return true;
+            else { //Suche nach Key wenn nicht gibt wird es eingefügt
+                if (key < root.key) {
+                    root.left = insert(key, value, root.left);
+                } else if (key > root.key) {
+                    root.right = insert(key, value, root.right);
+                } else { // Wenn Key vorhanden
+                    this.hilfsParameterInsert = false;
+                    value = root.value;
+                }
             }
-            return insert(key, value, node.right);
-        } else {
-            node.value = value;
-            return true;
-        }
-    }
-
-    // Performs a pre-order traversal of the tree rooted at the specified node
-    public void preOrder(Node node) {
-        if (node != null) {
-            System.out.println(node.key + " " + node.value);
-            preOrder(node.left);
-            preOrder(node.right);
-        }
-    }
-
-    // Performs an in-order traversal of the tree rooted at the specified node
-    public void inOrder(Node node) {
-        if (node != null) {
-            inOrder(node.left);
-            System.out.println(node.key + " " + node.value);
-            inOrder(node.right);
-        }
-    }
-
-    // Performs a post-order traversal of the tree rooted at the specified node
-    public void postOrder(Node node) {
-        if (node != null) {
-            postOrder(node.left);
-            postOrder(node.right);
-            System.out.println(node.key + " " + node.value);
-        }
-    }
-
-    // Searches the tree rooted at the specified node for a key-value pair with the specified key
-    public boolean search(int key, int value, Node node) {
-        if (node == null) {
-            return false;
+            return root;
         }
 
-        if (key < node.key) {
-            return search(key, value, node.left);
-        } else if (key > node.key) {
-            return search(key, value, node.right);
-        } else {
-            return node.value == value;
-        }
-    }
-
-    // Removes a key-value pair with the specified key from the tree rooted at the specified node
-    public boolean remove(int key, Node node) {
-        if (node == null) {
-            return false;
+        boolean insert(int value) {            //Hilfsmethode
+            insert(value, value, this.root);
+            return hilfsParameterInsert;
         }
 
-        // Find the node to remove
-        Node current = node;
-        Node parent = null;
-        boolean isLeftChild = false;
-        while (current.key != key) {
-            parent = current;
-            if (key < current.key) {
-                isLeftChild = true;
-                current = current.left;
-            } else {
-                isLeftChild = false;
-                current = current.right;
+        void preOrder(Node root) {
+            if (root != null) {
+                System.out.print(root.value + " ");
+                preOrder(root.left);
+                preOrder(root.right);
             }
-            if (current == null) {
+        }
+
+        void preOrder() {
+            preOrder(this.root);
+        }       // Hilfsmethode
+
+        void inOrder(Node root) {
+            if (root != null) {
+                inOrder(root.left);
+                System.out.print(root.value + " ");
+                inOrder(root.right);
+            }
+        }
+        void inOrder() {            //Hilfsmethode
+            inOrder(this.root);
+        }
+
+        void postOrder(Node root) {
+            if (root != null) {
+                //Ausgabe des linken kindes
+                postOrder(root.left);
+
+                postOrder(root.right);
+
+                System.out.print(root.value + " ");
+            }
+        }
+
+        void postOrder() {          //Hilfsmethode
+            postOrder(this.root);
+        }
+
+        boolean search(int key, int value, Node root) {
+            if (root == null) {
                 return false;
+            } else if (key < root.key) {
+                return search(key, value, root.left);
+
+            } else if (key > root.key) {
+                return search(key, value, root.right);
+            } else {
+                value = root.key;
+                return true;
             }
         }
 
-        // Case 1: The node to remove has no children
-        if (current.left == null && current.right == null) {
-            if (current == root) {
-                root = null;
-            } else if (isLeftChild) {
-                parent.left = null;
-            } else {
-                parent.right = null;
-            }
+        public boolean search(int value) {          //Hilfsmethode
+            return search(value, value, root);
         }
-        // Case 2: The node to remove has one child
-        else if (current.right == null) {
-            if (current == root) {
-                root = current.left;
-            } else if (isLeftChild) {
-                parent.left = current.left;
-            } else {
-                parent.right = current.left;
+
+        //Teil 4
+        // delete methode
+
+        Node remove(int key, Node root) {
+            if (root == null) {                         //Key nicht gefunden
+                hilfsParameterRemove = false;
+                return root;
+            } else if(key < root.key) {                 // by-pass nach links
+                root.left = remove(key,root.left);
+            } else if (key > root.key) {                // by-pass nach rechts
+                root.right = remove(key,root.right);
+            }else if (root.left == null || root.right == null) { // 0&1 Kind
+                root = (root.left != null) ? root.left : root.right;
+            } else {                                    // Hat 2 Kinder ...
+                Node min = new Node(key, root.value);
+                root.right = searchMin(root.right, min);
+                root.value = min.value;
+                root.key = min.key;
             }
-        } else if (current.left == null) {
-            if (current == root) {
-                root = current.right;
-            } else if (isLeftChild) {
-                parent.left = current.right;
-            } else {
-                parent.right = current.right;
-            }
+            return root;
         }
-        // Case 3: The node to remove has two children
-        else {
-            // Find the successor of the node to remove (the leftmost node in the right subtree)
-            Node successor = getSuccessor(current);
-            if (current == root) {
-                root = successor;
-            } else if (isLeftChild) {
-                parent.left = successor;
-            } else {
-                parent.right = successor;
-            }
-            successor.left = current.left;
+
+        public boolean remove(int key) {
+            root = remove(key, root);
+            return hilfsParameterRemove;
         }
-        return true;
+
+        Node searchMin(Node root, Node min) {
+            if (root.left == null) {
+                min.key = root.key;
+                min.value = root.value;
+                root = root.right;
+            } else  root.left = searchMin(root.left, min);
+            return root;
+        }
     }
 
-    private Node getSuccessor(Node node) {
-        Node parent = node;
-        Node successor = node;
-        Node current = node.right;
-        while (current != null) {
-            parent = successor;
-            successor = current;
-            current = current.left;
-        }
-        if (successor != node.right) {
-            parent.left = successor.right;
-            successor.right = node.right;
-        }
-        return successor;
-    }
-}
