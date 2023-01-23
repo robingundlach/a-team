@@ -30,7 +30,7 @@ class Heap {
             a[i] = a[largest];
             a[largest] = temp;
 
-            // Recursively heapify the affected sub-tree
+            // Recursively heapify the affected subtree
             heapify(a, n, largest);
         }
     }
